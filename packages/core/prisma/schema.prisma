@@ -12,7 +12,30 @@ datasource db {
   provider = "postgresql"
 }
 
+enum HttpMethod {
+  GET
+  POST
+  PUT
+  PATCH
+  DELETE
+  OPTIONS
+}
+
 model Consumer {
-  id   String @id @default(uuid())
-  name String
+  id   String  @id @default(uuid())
+  name String?
+}
+
+model Route {
+  id           String       @id @default(uuid())
+  prefix       String       @unique
+  targetUrl    String
+  stripPrefix  Boolean      @default(true)
+  authRequired Boolean      @default(false)
+  methods      HttpMethod[]
+  timeoutMs    Int          @default(5000)
+  isActive     Boolean      @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
