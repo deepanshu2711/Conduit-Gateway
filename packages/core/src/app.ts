@@ -1,5 +1,8 @@
 import Fastify from "fastify";
+import replyFrom from "@fastify/reply-from";
+
 import { routeRoutes } from "./modules/admin/routes/routes.routes.js";
+import { gatewayHandler } from "./modules/proxy/gateway.handler.js";
 import { AppError } from "./lib/errors.js";
 
 export const app = Fastify({
@@ -23,6 +26,7 @@ app.setErrorHandler((error, _request, reply) => {
   });
 });
 
+app.register(replyFrom);
 app.get("/health", async () => {
   return {
     status: "ok",
@@ -32,3 +36,5 @@ app.get("/health", async () => {
 app.register(routeRoutes, {
   prefix: "/api/v1/admin/routes",
 });
+
+app.all("/*", gatewayHandler);
