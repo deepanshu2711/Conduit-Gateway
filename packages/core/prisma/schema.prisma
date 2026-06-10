@@ -22,8 +22,9 @@ enum HttpMethod {
 }
 
 model Consumer {
-  id   String  @id @default(uuid())
-  name String?
+  id             String          @id @default(uuid())
+  name           String?
+  rateLimitRules RateLimitRule[]
 }
 
 model Route {
@@ -36,6 +37,20 @@ model Route {
   timeoutMs    Int          @default(5000)
   isActive     Boolean      @default(true)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  rateLimitRules RateLimitRule[]
+}
+
+model RateLimitRule {
+  id String @id @default(uuid())
+
+  routeId    String?
+  consumerId String?
+
+  maxRequests Int
+  windowSec   Int
+
+  route    Route?    @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  consumer Consumer? @relation(fields: [consumerId], references: [id], onDelete: Cascade)
 }
