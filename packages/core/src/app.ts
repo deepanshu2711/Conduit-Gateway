@@ -5,6 +5,7 @@ import { routeRoutes } from "./modules/admin/routes/routes.routes.js";
 import { gatewayHandler } from "./modules/proxy/gateway.handler.js";
 import { AppError } from "./lib/errors.js";
 import { rateLimitingRoutes } from "./modules/admin/rateLimiting/rateLimiting.routes.js";
+import { startLogWorker } from "./plugins/logWorker.js";
 
 export const app = Fastify({
   logger: true,
@@ -28,6 +29,8 @@ app.setErrorHandler((error, _request, reply) => {
 });
 
 app.register(replyFrom);
+startLogWorker();
+
 app.get("/health", async () => {
   return {
     status: "ok",

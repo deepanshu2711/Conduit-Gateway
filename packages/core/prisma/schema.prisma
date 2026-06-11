@@ -25,6 +25,7 @@ model Consumer {
   id             String          @id @default(uuid())
   name           String?
   rateLimitRules RateLimitRule[]
+  requestLogs    RequestLog[]
 }
 
 model Route {
@@ -40,6 +41,7 @@ model Route {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   rateLimitRules RateLimitRule[]
+  requestLogs    RequestLog[]
 }
 
 model RateLimitRule {
@@ -54,5 +56,28 @@ model RateLimitRule {
   route    Route     @relation(fields: [routeId], references: [id], onDelete: Cascade)
   consumer Consumer? @relation(fields: [consumerId], references: [id], onDelete: Cascade)
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@unique([routeId, consumerId])
+}
+
+model RequestLog {
+  id         String     @id @default(uuid())
+  routeId    String?
+  consumerId String?
+  method     HttpMethod
+  path       String
+
+  statusCode Int?
+  latency    Int?
+  ip         String?
+
+  route    Route?    @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  consumer Consumer? @relation(fields: [consumerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([routeId])
 }
