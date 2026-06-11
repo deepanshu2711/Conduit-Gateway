@@ -3,7 +3,7 @@ import { z } from "zod";
 export const createRateLimitRuleSchema = {
   body: z.object({
     routeId: z.string(),
-    consumerId: z.string(),
+    consumerId: z.string().optional(),
     maxRequests: z.int(),
     windowSec: z.int(),
   }),
