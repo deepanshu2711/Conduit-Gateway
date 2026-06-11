@@ -45,12 +45,14 @@ model Route {
 model RateLimitRule {
   id String @id @default(uuid())
 
-  routeId    String?
+  routeId    String
   consumerId String?
 
   maxRequests Int
   windowSec   Int
 
-  route    Route?    @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  route    Route     @relation(fields: [routeId], references: [id], onDelete: Cascade)
   consumer Consumer? @relation(fields: [consumerId], references: [id], onDelete: Cascade)
+
+  @@unique([routeId, consumerId])
 }

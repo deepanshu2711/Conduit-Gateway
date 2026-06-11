@@ -4,6 +4,7 @@ import replyFrom from "@fastify/reply-from";
 import { routeRoutes } from "./modules/admin/routes/routes.routes.js";
 import { gatewayHandler } from "./modules/proxy/gateway.handler.js";
 import { AppError } from "./lib/errors.js";
+import { rateLimitingRoutes } from "./modules/admin/rateLimiting/rateLimiting.routes.js";
 
 export const app = Fastify({
   logger: true,
@@ -35,6 +36,9 @@ app.get("/health", async () => {
 
 app.register(routeRoutes, {
   prefix: "/api/v1/admin/routes",
+});
+app.register(rateLimitingRoutes, {
+  prefix: "/api/v1/admin/rate-limiting",
 });
 
 app.all("/*", gatewayHandler);
