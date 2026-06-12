@@ -1,5 +1,9 @@
 import Fastify from "fastify";
 import replyFrom from "@fastify/reply-from";
+import {
+  serializerCompiler,
+  validatorCompiler,
+} from "fastify-type-provider-zod";
 
 import { routeRoutes } from "./modules/admin/routes/routes.routes.js";
 import { gatewayHandler } from "./modules/proxy/gateway.handler.js";
@@ -11,6 +15,9 @@ import { consumerRoutes } from "./modules/admin/consumer/consumer.routes.js";
 export const app = Fastify({
   logger: true,
 });
+
+app.setValidatorCompiler(validatorCompiler);
+app.setSerializerCompiler(serializerCompiler);
 
 app.setErrorHandler((error, _request, reply) => {
   if (error instanceof AppError) {

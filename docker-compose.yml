@@ -12,3 +12,16 @@ services:
     image: redis:7
     ports:
       - "6379:6379"
+
+  core:
+    build:
+      context: .
+      dockerfile: packages/core/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://conduit:conduit@postgres:5432/conduit"
+      REDIS_HOST: "redis"
+    depends_on:
+      - postgres
+      - redis
