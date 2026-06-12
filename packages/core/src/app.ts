@@ -6,6 +6,7 @@ import { gatewayHandler } from "./modules/proxy/gateway.handler.js";
 import { AppError } from "./lib/errors.js";
 import { rateLimitingRoutes } from "./modules/admin/rateLimiting/rateLimiting.routes.js";
 import { startLogWorker } from "./plugins/logWorker.js";
+import { consumerRoutes } from "./modules/admin/consumer/consumer.routes.js";
 
 export const app = Fastify({
   logger: true,
@@ -42,6 +43,9 @@ app.register(routeRoutes, {
 });
 app.register(rateLimitingRoutes, {
   prefix: "/api/v1/admin/rate-limiting",
+});
+app.register(consumerRoutes, {
+  prefix: "/api/v1/admin/consumer",
 });
 
 app.all("/*", gatewayHandler);
