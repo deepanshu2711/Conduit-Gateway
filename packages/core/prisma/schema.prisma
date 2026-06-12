@@ -21,9 +21,22 @@ enum HttpMethod {
   OPTIONS
 }
 
+enum Scopes {
+  read
+  write
+  admin
+}
+
 model Consumer {
-  id             String          @id @default(uuid())
-  name           String?
+  id         String   @id @default(uuid())
+  name       String?
+  apiHashKey String
+  scopes     Scopes[]
+  isActive   Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   rateLimitRules RateLimitRule[]
   requestLogs    RequestLog[]
 }
