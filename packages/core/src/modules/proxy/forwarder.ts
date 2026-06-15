@@ -5,6 +5,11 @@ import { HttpMethod } from "../../generated/prisma/enums.js";
 import { error } from "../../utils/responses.js";
 import { logQueue } from "../../plugins/queue.js";
 import { circuitBreaker } from "../circuitBreaker/circuitBreaker.js";
+import {
+  buildCacheKey,
+  getCachedResponse,
+  setCachedResponse,
+} from "../../utils/cache.js";
 
 export const forwarder = async (
   request: FastifyRequest,
@@ -54,14 +59,73 @@ export const forwarder = async (
     });
   };
 
-  reply.raw.on("error", () => {
-    recordOutcome(0);
-  });
+  try {
+    const shouldCache =
+      (request.method === "GET" || request.method === "HEAD") &&
+      !request.headers.authorization;
+    const cacheKey = buildCacheKey(request.method, request.url);
 
-  reply.from(targetUrl, {
-    timeout: route.timeoutMs,
-    onResponse: (_request, _reply, res) => {
-      recordOutcome(res.statusCode ?? 0);
-    },
-  });
+    if (shouldCache) {
+      const cached = await getCachedResponse(cacheKey);
+
+      if (cached) {
+        const skipHeaders = new Set([
+          "transfer-encoding",
+          "connection",
+          "keep-alive",
+        ]);
+
+        for (const [key, value] of Object.entries(cached.headers)) {
+          if (!skipHeaders.has(key.toLowerCase())) {
+            reply.header(key, value);
+          }
+        }
+
+        recordOutcome(cached.statusCode);
+        return reply.code(cached.statusCode).send(cached.body);
+      }
+    }
+    const upstreamRes = await fetch(targetUrl, {
+      method: request.method,
+      headers: request.headers as Record<string, string>,
+      body: ["GET", "HEAD"].includes(request.method)
+        ? undefined
+        : (request.body as any),
+    });
+
+    const statusCode = upstreamRes.status;
+    const headers: Record<string, string> = {};
+    upstreamRes.headers.forEach((value, key) => {
+      const lower = key.toLowerCase();
+      if (
+        ![
+          "transfer-encoding",
+          "connection",
+          "keep-alive",
+          "content-encoding",
+        ].includes(lower)
+      ) {
+        headers[key] = value;
+      }
+    });
+    const body = await upstreamRes.text();
+    Object.entries(headers).forEach(([key, value]) => {
+      reply.header(key, value);
+    });
+
+    if (shouldCache && statusCode >= 200 && statusCode < 300) {
+      await setCachedResponse(cacheKey, {
+        statusCode,
+        headers,
+        body,
+      });
+    }
+
+    recordOutcome(statusCode);
+
+    return reply.code(statusCode).send(body);
+  } catch (e) {
+    recordOutcome(0);
+    return error(reply, null, 502, "Bad Gateway");
+  }
 };
