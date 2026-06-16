@@ -12,6 +12,7 @@ import { rateLimitingRoutes } from "./modules/admin/rateLimiting/rateLimiting.ro
 import { startLogWorker } from "./plugins/logWorker.js";
 import { consumerRoutes } from "./modules/admin/consumer/consumer.routes.js";
 import { ipRuleRoutes } from "./modules/admin/ipRule/ipRule.routes.js";
+import { ipFilter } from "./middleware/ipFilter.js";
 
 export const app = Fastify({
   logger: true,
@@ -40,6 +41,8 @@ app.setErrorHandler((error, _request, reply) => {
 
 app.register(replyFrom);
 startLogWorker();
+
+app.addHook("onRequest", ipFilter);
 
 app.get("/health", async () => {
   return {
