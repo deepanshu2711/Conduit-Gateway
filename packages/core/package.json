@@ -19,6 +19,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@fastify/cors": "^11.2.0",
     "@fastify/reply-from": "^12.6.2",
     "@fastify/type-provider-zod": "^1.0.0",
     "@prisma/adapter-pg": "^7.8.0",

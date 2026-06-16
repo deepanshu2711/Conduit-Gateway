@@ -4,6 +4,7 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from "fastify-type-provider-zod";
+import cors from "@fastify/cors";
 
 import { routeRoutes } from "./modules/admin/routes/routes.routes.js";
 import { gatewayHandler } from "./modules/proxy/gateway.handler.js";
@@ -43,6 +44,24 @@ app.register(replyFrom);
 startLogWorker();
 
 app.addHook("onRequest", ipFilter);
+
+app.register(cors, {
+  origin: process.env.CORS_ORIGIN?.split(",") ?? true,
+  methods: process.env.CORS_METHODS?.split(",") ?? [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+  ],
+  allowedHeaders: process.env.CORS_ALLOWED_HEADERS?.split(",") ?? [
+    "Content-Type",
+    "Authorization",
+  ],
+  credentials: process.env.CORS_CREDENTIALS !== "false",
+  maxAge: Number(process.env.CORS_MAX_AGE) || 86400,
+});
 
 app.get("/health", async () => {
   return {
