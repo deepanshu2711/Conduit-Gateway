@@ -33,6 +33,11 @@ enum CircuitState {
   half
 }
 
+enum IpRuleType {
+  ALLOW
+  DENY
+}
+
 model Consumer {
   id         String   @id @default(uuid())
   name       String?
@@ -113,4 +118,15 @@ model RequestLog {
   updatedAt DateTime @updatedAt
 
   @@index([routeId])
+}
+
+model IpRule {
+  id       String     @id @default(uuid())
+  name     String     @default("unknown")
+  cidr     String
+  type     IpRuleType
+  isActive Boolean    @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
