@@ -11,6 +11,8 @@ export const createRouteSchema = {
       .optional(),
     timeoutMs: z.number().int().optional(),
     isActive: z.boolean().optional(),
+    cacheEnabled: z.boolean().optional(),
+    cacheTtlSec: z.number().int().min(1).optional(),
   }),
 };
 
@@ -26,6 +28,8 @@ export const updateRouteSchema = {
       .optional(),
     timeoutMs: z.number().int().optional(),
     isActive: z.boolean().optional(),
+    cacheEnabled: z.boolean().optional(),
+    cacheTtlSec: z.number().int().min(1).optional(),
   }),
 };
 

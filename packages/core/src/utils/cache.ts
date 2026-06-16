@@ -1,8 +1,6 @@
 import { createHash } from "node:crypto";
 import { redis } from "../plugins/redis.js";
 
-const TTL = 10;
-
 export const buildCacheKey = (method: string, url: string): string => {
   const hash = createHash("md5").update(`${method}:${url}`).digest("hex");
   return `proxy:cache:${hash}`;
@@ -26,6 +24,7 @@ export const setCachedResponse = async (
     headers: Record<string, string>;
     body: string;
   },
+  TTL: number,
 ) => {
   await redis.setex(key, TTL, JSON.stringify(data));
 };

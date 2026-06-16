@@ -57,6 +57,9 @@ model Route {
   timeoutMs    Int          @default(5000)
   isActive     Boolean      @default(true)
 
+  cacheEnabled Boolean @default(true)
+  cacheTtlSec  Int     @default(10)
+
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   rateLimitRules RateLimitRule[]

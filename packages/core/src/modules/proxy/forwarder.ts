@@ -62,7 +62,10 @@ export const forwarder = async (
   try {
     const shouldCache =
       (request.method === "GET" || request.method === "HEAD") &&
+      route.cacheEnabled &&
+      !route.authRequired &&
       !request.headers.authorization;
+
     const cacheKey = buildCacheKey(request.method, request.url);
 
     if (shouldCache) {
@@ -114,11 +117,15 @@ export const forwarder = async (
     });
 
     if (shouldCache && statusCode >= 200 && statusCode < 300) {
-      await setCachedResponse(cacheKey, {
-        statusCode,
-        headers,
-        body,
-      });
+      await setCachedResponse(
+        cacheKey,
+        {
+          statusCode,
+          headers,
+          body,
+        },
+        route.cacheTtlSec,
+      );
     }
 
     recordOutcome(statusCode);
