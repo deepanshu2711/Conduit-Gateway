@@ -13,6 +13,7 @@ export const gatewayHandler = async (
 ) => {
   const path = request.url.split("?")[0]!;
   const route = await findRoute(path);
+  if (!request.consumer) return error(reply, null, 401, "Unauthorized");
 
   if (!route) {
     return error(reply, null, 404, "No route found");

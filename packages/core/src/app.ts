@@ -14,6 +14,7 @@ import { startLogWorker } from "./plugins/logWorker.js";
 import { consumerRoutes } from "./modules/admin/consumer/consumer.routes.js";
 import { ipRuleRoutes } from "./modules/admin/ipRule/ipRule.routes.js";
 import { ipFilter } from "./middleware/ipFilter.js";
+import { enforceAdmin, resolveConsumer } from "./middleware/auth.js";
 
 export const app = Fastify({
   logger: true,
@@ -43,8 +44,6 @@ app.setErrorHandler((error, _request, reply) => {
 app.register(replyFrom);
 startLogWorker();
 
-app.addHook("onRequest", ipFilter);
-
 app.register(cors, {
   origin: process.env.CORS_ORIGIN?.split(",") ?? true,
   methods: process.env.CORS_METHODS?.split(",") ?? [
@@ -67,6 +66,16 @@ app.get("/health", async () => {
   return {
     status: "ok",
   };
+});
+
+app.addHook("onRequest", ipFilter);
+app.addHook("onRequest", resolveConsumer);
+
+app.addHook("onRequest", (req, reply, done) => {
+  if (req.url.startsWith("/api/v1/admin")) {
+    return enforceAdmin(req, reply);
+  }
+  done();
 });
 
 app.register(routeRoutes, {

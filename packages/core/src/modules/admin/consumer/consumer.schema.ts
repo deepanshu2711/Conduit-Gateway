@@ -3,7 +3,6 @@ import { z } from "zod";
 export const createConsumerSchema = {
   body: z.object({
     name: z.string(),
-    apiHashKey: z.string(),
     scopes: z.array(z.enum(["read", "write", "admin"])),
   }),
 };

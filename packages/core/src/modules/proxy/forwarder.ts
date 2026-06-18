@@ -56,6 +56,7 @@ export const forwarder = async (
       statusCode,
       latency: Date.now() - startTime,
       ip: request.ip,
+      consumerId: request.consumer?.id ?? null,
     });
   };
 

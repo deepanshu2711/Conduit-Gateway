@@ -1,3 +1,4 @@
+import { generateApiKey, hashApiKey } from "../../../utils/helpers/helpers.js";
 import { ConsumerRepository } from "./consumer.repository.js";
 import { CreateConsumerBody, UpdateConsumerBody } from "./consumer.schema.js";
 
@@ -7,7 +8,10 @@ export const ConsumerService = {
     return data;
   },
   create: async (payload: CreateConsumerBody) => {
-    const data = await ConsumerRepository.create(payload);
+    const apiKey = generateApiKey();
+    const hashedKey = hashApiKey(apiKey);
+
+    const data = await ConsumerRepository.create(payload, hashedKey);
     return data;
   },
   update: async (id: string, payload: UpdateConsumerBody) => {

@@ -8,8 +8,10 @@ export const ConsumerRepository = {
     const consumers = await prisma.consumer.findMany();
     return consumers;
   },
-  create: async (data: CreateConsumerBody) => {
-    const conumer = await prisma.consumer.create({ data });
+  create: async (data: CreateConsumerBody, apiHashKey: string) => {
+    const conumer = await prisma.consumer.create({
+      data: { ...data, apiHashKey },
+    });
     return conumer;
   },
   update: async (id: string, data: UpdateConsumerBody) => {
