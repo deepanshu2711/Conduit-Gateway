@@ -5,17 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Activity,
   AlertCircle,
-  Bell,
-  Book,
   CheckCircle2,
   ChevronDown,
   Clock,
   Database,
-  Globe,
   Plus,
   RefreshCw,
-  Search,
-  Settings,
   User,
   Zap,
 } from "lucide-react";
@@ -331,90 +326,6 @@ export default function ConduitDashboard() {
 
   return (
     <div className="min-h-screen bg-[#0b0c10] text-[#f3f4f6] font-sans selection:bg-blue-500/30 selection:text-blue-200">
-      {/* Top Navigation */}
-      <header className="sticky top-0 z-40 flex items-center justify-between px-6 py-3 border-b border-[#272a33] bg-[#0b0c10]/95 backdrop-blur-sm">
-        <div className="flex items-center space-x-8">
-          <div className="flex items-center space-x-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#1a1c23] border border-[#272a33]">
-              <Globe className="h-4 w-4 text-blue-500" />
-            </div>
-            <span className="font-semibold tracking-tight text-[#f3f4f6]">
-              Conduit
-            </span>
-            <span className="text-sm text-[#9ca3af]">Gateway</span>
-          </div>
-
-          <nav className="hidden md:flex items-center space-x-1">
-            <a
-              href="/dashboard"
-              className="px-3 py-1.5 text-sm font-medium rounded-md bg-[#1a1c23] text-[#f3f4f6] border border-[#272a33]"
-            >
-              Dashboard
-            </a>
-            <a
-              href="/routes"
-              className="px-3 py-1.5 text-sm font-medium rounded-md text-[#9ca3af] hover:text-[#f3f4f6] hover:bg-[#1a1c23]/50 transition-colors"
-            >
-              Routes
-            </a>
-            <a
-              href="/consumers"
-              className="px-3 py-1.5 text-sm font-medium rounded-md text-[#9ca3af] hover:text-[#f3f4f6] hover:bg-[#1a1c23]/50 transition-colors"
-            >
-              Consumers
-            </a>
-            <a
-              href="/rate-limit"
-              className="px-3 py-1.5 text-sm font-medium rounded-md text-[#9ca3af] hover:text-[#f3f4f6] hover:bg-[#1a1c23]/50 transition-colors"
-            >
-              Rate Limits
-            </a>
-            <a
-              href="/ip-rule"
-              className="px-3 py-1.5 text-sm font-medium rounded-md text-[#9ca3af] hover:text-[#f3f4f6] hover:bg-[#1a1c23]/50 transition-colors"
-            >
-              IP Rules
-            </a>
-          </nav>
-        </div>
-
-        <div className="flex items-center space-x-4">
-          <button className="flex items-center space-x-2 px-3 py-1.5 text-xs font-medium rounded-md bg-[#1a1c23] border border-[#272a33] text-[#f3f4f6] hover:border-[#3b82f6]/50 transition-colors">
-            <div className="h-2 w-2 rounded-full bg-emerald-500" />
-            <span>Production</span>
-            <ChevronDown className="h-3 w-3 text-[#9ca3af]" />
-          </button>
-
-          <div className="flex items-center space-x-2 border-l border-[#272a33] pl-4">
-            <button
-              aria-label="Documentation"
-              className="p-1.5 text-[#9ca3af] hover:text-[#f3f4f6] transition-colors rounded-md hover:bg-[#1a1c23]"
-            >
-              <Book className="h-4 w-4" />
-            </button>
-            <button
-              aria-label="Notifications"
-              className="relative p-1.5 text-[#9ca3af] hover:text-[#f3f4f6] transition-colors rounded-md hover:bg-[#1a1c23]"
-            >
-              <Bell className="h-4 w-4" />
-              <span className="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-blue-500 border border-[#0b0c10]" />
-            </button>
-            <button
-              aria-label="Settings"
-              className="p-1.5 text-[#9ca3af] hover:text-[#f3f4f6] transition-colors rounded-md hover:bg-[#1a1c23]"
-            >
-              <Settings className="h-4 w-4" />
-            </button>
-            <button
-              aria-label="User Menu"
-              className="ml-2 flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-blue-800 text-xs font-bold text-white border border-[#272a33]"
-            >
-              ME
-            </button>
-          </div>
-        </div>
-      </header>
-
       <main className="mx-auto max-w-7xl px-6 py-8 space-y-8">
         {/* Page Header */}
         <motion.div
